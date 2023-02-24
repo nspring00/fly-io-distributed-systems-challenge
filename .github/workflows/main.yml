@@ -42,4 +42,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: maelstrom-output
-          path: store/${{ matrix.challenge.workload }}/latest
+          path: `symlink -f store/${{ matrix.challenge.workload }}/latest`
