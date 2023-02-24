@@ -32,7 +32,7 @@ jobs:
       - name: Test file name
         run: ls Challenge.Echo/bin/Release/net7.0
       - name: Run the test
-        run: ./maelstrom/maelstrom test -w echo --bin Challenge.Echo/bin/Release/net7.0/maelstrom-echo --node-count 1 --time-limit 10
+        run: ./maelstrom/maelstrom test -w echo --bin Challenge.Echo/bin/Release/net7.0/Challenge.Echo --node-count 1 --time-limit 10
 
       
       
