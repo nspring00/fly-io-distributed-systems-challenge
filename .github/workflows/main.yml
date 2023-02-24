@@ -10,9 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install APT dependencies
-        run: |
-          sudo apt-get update
-          sudo apt install -y graphviz gnuplot
+        run: sudo apt install -y graphviz gnuplot
       - name: Setup .NET SDK 7.0.x
         uses: actions/setup-dotnet@v3
         with:
@@ -32,7 +30,7 @@ jobs:
       - name: Test file name
         run: ls Challenge.Echo/bin/Release/net7.0
       - name: Run the test
-        run: ./maelstrom/maelstrom test -w echo --bin Challenge.Echo/bin/Release/net7.0/Challenge.Echo --node-count 1 --time-limit 10
+        run: java -jar maelstrom/lib/maelstrom.jar test -w echo --bin Challenge.Echo/bin/Release/net7.0/Challenge.Echo --node-count 1 --time-limit 10
 
       
       
