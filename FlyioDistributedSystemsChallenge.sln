@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Challenge.Echo", "Challenge.Echo\Challenge.Echo.csproj", "{E5E9442A-DF79-4303-94AB-280BB4518326}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maelstrom", "Maelstrom\Maelstrom.csproj", "{E145219A-9347-4AA3-A3C6-075E2C7EEE66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Challenge.UniqueIds", "Challenge.UniqueIds\Challenge.UniqueIds.csproj", "{2830119F-9D06-41FB-BEC0-403C68D5EE56}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E5E9442A-DF79-4303-94AB-280BB4518326}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5E9442A-DF79-4303-94AB-280BB4518326}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5E9442A-DF79-4303-94AB-280BB4518326}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5E9442A-DF79-4303-94AB-280BB4518326}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E145219A-9347-4AA3-A3C6-075E2C7EEE66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E145219A-9347-4AA3-A3C6-075E2C7EEE66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E145219A-9347-4AA3-A3C6-075E2C7EEE66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E145219A-9347-4AA3-A3C6-075E2C7EEE66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2830119F-9D06-41FB-BEC0-403C68D5EE56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2830119F-9D06-41FB-BEC0-403C68D5EE56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2830119F-9D06-41FB-BEC0-403C68D5EE56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2830119F-9D06-41FB-BEC0-403C68D5EE56}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
