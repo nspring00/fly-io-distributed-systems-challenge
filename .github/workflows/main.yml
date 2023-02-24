@@ -1,0 +1,36 @@
+name: Test all DS challenges
+
+on: [push,pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install APT dependencies
+        run: apt install -y graphviz gnuplot
+      - name: Setup .NET SDK 7.0.x
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
+      - name: Download Maelstrom 2.2.0
+        run: |
+          curl https://github.com/jepsen-io/maelstrom/releases/download/v0.2.2/maelstrom.tar.bz2 --output maelstrom.tar.bz2
+          tar -xf maelstrom.tar.bz2
+      - name: Install C# dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Test file name
+        run: ls Challenge.Echo/bin/Release/net7.0
+      - name: Run the test
+        run: ./maelstrom/maelstrom test -w echo --bin Challenge.Echo/bin/Release/net7.0/maelstrom-echo --node-count 1 --time-limit 10
+
+      
+      
