@@ -3,9 +3,15 @@ name: Test all DS challenges
 on: [push,pull_request]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        challenge:
+          - {name: Echo, workload: echo, flags: --node-count 1 --time-limit 10}
+          - {name: UniqueIds, workload: unique-ids, flags: --time-limit 30 --rate 1000 --node-count 3 --availability total --nemesis partition}
 
     steps:
       - uses: actions/checkout@v3
@@ -27,13 +33,11 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
-      - name: Test file name
-        run: ls Challenge.Echo/bin/Release/net7.0
       - name: Run the test
         run: |
           export DISPLAY=:99
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-          java -jar maelstrom/lib/maelstrom.jar test -w echo --bin Challenge.Echo/bin/Release/net7.0/Challenge.Echo --node-count 1 --time-limit 10
+          java -jar maelstrom/lib/maelstrom.jar test -w ${{ matrix.challenge.workload }} --bin Challenge.${{ matrix.challenge.name }}/bin/Release/net7.0/Challenge.${{ matrix.challenge.name }} ${{ matrix.challenge.flags }}
 
       
       
