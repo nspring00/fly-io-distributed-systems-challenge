@@ -42,4 +42,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: maelstrom-output
-          path: '`readlink -f store/${{ matrix.challenge.workload }}/latest`'
+          path: store/${{ matrix.challenge.workload }}/
