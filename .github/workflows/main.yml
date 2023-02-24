@@ -1,0 +1,45 @@
+name: Test all DS challenges
+
+on: [push,pull_request]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        challenge:
+          - {name: Echo, workload: echo, flags: --node-count 1 --time-limit 10}
+          - {name: UniqueIds, workload: unique-ids, flags: --time-limit 30 --rate 1000 --node-count 3 --availability total --nemesis partition}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install APT dependencies
+        run: sudo apt install -y graphviz gnuplot xvfb
+      - name: Setup .NET SDK 7.0.x
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
+      - name: Download Maelstrom 2.2.0
+        run: |
+          curl -sLO https://github.com/jepsen-io/maelstrom/releases/download/v0.2.2/maelstrom.tar.bz2 -o maelstrom.tar.bz2
+          tar -xf maelstrom.tar.bz2
+      - name: Install C# dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Run the test
+        continue-on-error: true
+        run: |
+          export DISPLAY=:99
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          java -jar maelstrom/lib/maelstrom.jar test -w ${{ matrix.challenge.workload }} --bin Challenge.${{ matrix.challenge.name }}/bin/Release/net7.0/Challenge.${{ matrix.challenge.name }} ${{ matrix.challenge.flags }}
+      - uses: actions/upload-artifact@v3
+        with:
+          name: maelstrom-output
+          path: store/
