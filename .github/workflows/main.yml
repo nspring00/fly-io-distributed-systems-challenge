@@ -9,6 +9,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Configure ENV
+        run: export DISPLAY=0.0
       - name: Install APT dependencies
         run: sudo apt install -y graphviz gnuplot
       - name: Setup .NET SDK 7.0.x
