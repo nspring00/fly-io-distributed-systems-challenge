@@ -1,23 +1,20 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace Maelstrom;
 
-public record Message(string Src, string Dest, JsonObject Body)
+public record Message
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
+    [JsonPropertyName("src")]
+    public required string Source { get; set; }
+    [JsonPropertyName("dest")]
+    public required string Destination { get; set; }
+    [JsonPropertyName("body")]
+    public required JsonNode Body { get; set; }
     
-    public static Message FromJson(string json)
+    public T GetBody<T>() where T : Body
     {
-        return JsonSerializer.Deserialize<Message>(json, JsonOptions) 
-               ?? throw new Exception("Failed to deserialize message: " + json);
-    }
-
-    public string ToJson()
-    {
-        return JsonSerializer.Serialize(this, JsonOptions);
+        return Body.Deserialize<T>() ?? throw new Exception("Failed to deserialize body.");
     }
 }

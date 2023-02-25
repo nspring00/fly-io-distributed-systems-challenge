@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using System.Text.Json.Nodes;
+using System.Text.Json;
 
 namespace Maelstrom;
 
@@ -9,7 +9,7 @@ public class Node
     public IList<string> NodeIds { get; } = new List<string>();
     
     private readonly IDictionary<string, Action<Message>> _requestHandlers = new Dictionary<string, Action<Message>>();
-    private readonly ConcurrentDictionary<int, Action<Message>> _callbackHandlers = new ConcurrentDictionary<int, Action<Message>>();
+    private readonly ConcurrentDictionary<int, Action<Message>> _callbackHandlers = new();
     
     private int _lastMessageId;
     
@@ -24,30 +24,32 @@ public class Node
     
     private void Send(Message message)
     {
-        Console.Out.WriteLine(message.ToJson());
+        Console.Out.WriteLine(JsonSerializer.Serialize(message));
         Console.Out.Flush();
     }
     
-    public void Send(string dest, JsonObject body)
+    public void Send<TBody>(string dest, TBody body) where TBody : Body
     {
-        var message = new Message(Id, dest, body);
-        Send(message);
+        Send(new Message
+        {
+            Source = Id, Destination = dest, Body = JsonSerializer.SerializeToNode(body)!
+        });
     }
     
-    public void Reply(Message request, JsonObject body)
+    public void Reply<TBody>(Message request, TBody body) where TBody : Body
     {
-        body.Add("in_reply_to", request.Body["msg_id"]?.GetValue<int>() ?? -1);
-        Send(request.Src, body);
+        body.InReplyTo = request.Body["msg_id"]?.GetValue<int>() ?? -1;
+        Send(request.Source, body);
     }
     
-    public void Rpc(string dest, JsonObject body, Action<Message> callback)
+    public void Rpc(string dest, Body body, Action<Message> callback)
     {
         var msgId = Interlocked.Increment(ref _lastMessageId);
         if (!_callbackHandlers.TryAdd(msgId, callback))
         {
             throw new Exception("Failed to add callback for message id " + msgId);
         }
-        body.Add("msg_id", msgId);
+        body.MessageId = msgId;
         Send(dest, body);
     }
     
@@ -69,18 +71,18 @@ public class Node
     
     public void HandleInit(Message message)
     {
-        Id = message.Body["node_id"]?.GetValue<string>() ?? throw new Exception("No node id found in init");
-        foreach (var nodeId in message.Body["node_ids"]?.AsArray() ?? throw new Exception("No node ids found in init"))
+        var body = message.GetBody<InitBody>();
+        Id = body.Id;
+        NodeIds.Clear();
+        foreach (var nodeId in body.NodeIds)
         {
-            NodeIds.Add(nodeId!.GetValue<string>());
+            NodeIds.Add(nodeId);
         }
         Console.Error.WriteLine("Initialized node " + Id + " with " + NodeIds.Count + " nodes");
     }
 
     public void HandleMessage(Message message)
     {
-        Console.Error.WriteLine("Received: " + message);
-
         var type = message.Body["type"]?.GetValue<string>();
         var replyTo = message.Body["in_reply_to"]?.GetValue<int>();
 
@@ -104,13 +106,7 @@ public class Node
             {
                 HandleInit(message);
                 HandleRequest(type, message);
-                var response = new JsonObject
-                {
-                    {
-                        "type", "init_ok"
-                    }
-                };
-                Reply(message, response);
+                Reply(message, new Body {Type = "init_ok"});
                 return;
             }
             default:
@@ -127,7 +123,8 @@ public class Node
             while (true)
             {
                 var line = Console.ReadLine()!;
-                var message = Message.FromJson(line);
+                Console.Error.WriteLine("Received: " + line);
+                var message = JsonSerializer.Deserialize<Message>(line) ?? throw new Exception("Failed to deserialize message");
                 HandleMessage(message);
             }
         }

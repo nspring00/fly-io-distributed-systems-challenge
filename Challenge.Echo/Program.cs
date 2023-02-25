@@ -1,24 +1,16 @@
-﻿using System.Text.Json.Nodes;
+﻿using Challenge.Echo;
 using Maelstrom;
 
-var messageId = 1;
+var messageId = 0;
 var node = new Node();
 
 node.On("echo", message =>
 {
-    var response = new JsonObject
+    var body = message.GetBody<EchoBody>();
+    node.Reply(message, new EchoBody
     {
-        {
-            "type", "echo_ok"
-        },
-        {
-            "msg_id", messageId++
-        },
-        {
-            "echo", message.Body["echo"]?.GetValue<string>() ?? throw new Exception("No echo found in echo request")
-        }
-    };
-    node.Reply(message, response);
+        Type = "echo_ok", MessageId = Interlocked.Increment(ref messageId), Echo = body.Echo
+    });
 });
 
 node.Run();
