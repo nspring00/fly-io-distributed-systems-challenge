@@ -8,7 +8,7 @@ const string messageIdTemplate = "{0}-{1}";
 
 string GenerateId()
 {
-    return string.Format(messageIdTemplate, node.NodeId, messageCounter++);
+    return string.Format(messageIdTemplate, node.Id, messageCounter++);
 }
 
 node.On("generate", message =>
