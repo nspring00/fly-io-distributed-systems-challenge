@@ -27,7 +27,7 @@ jobs:
           java-version: '17'
       - name: Download Maelstrom 2.2.0
         run: |
-          curl -sLO https://github.com/jepsen-io/maelstrom/releases/download/v0.2.2/maelstrom.tar.bz2 -o maelstrom.tar.bz2
+          curl -sLO https://github.com/jepsen-io/maelstrom/releases/download/v0.2.2/maelstrom.tar.bz2
           tar -xf maelstrom.tar.bz2
       - name: Install C# dependencies
         run: dotnet restore
@@ -42,4 +42,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: maelstrom-output
-          path: store/
+          path: | 
+            store/
+            !./**/current
+            !./**/latest
