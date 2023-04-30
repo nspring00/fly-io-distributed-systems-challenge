@@ -13,6 +13,11 @@ public class Node
     
     private int _lastMessageId;
     
+    public void Log(string message)
+    {
+        Console.Error.WriteLine(message);
+    }
+    
     public Node On(string type, Action<Message> handler)
     {
         if (!_requestHandlers.TryAdd(type, handler))
@@ -24,7 +29,9 @@ public class Node
     
     private void Send(Message message)
     {
-        Console.Out.WriteLine(JsonSerializer.Serialize(message));
+        var line = JsonSerializer.Serialize(message);
+        Log("Sent: " + line);
+        Console.Out.WriteLine(line);
         Console.Out.Flush();
     }
     
@@ -66,7 +73,7 @@ public class Node
             return;
         }
 
-        Console.Error.WriteLine("No handler found for request type " + type);
+        Log("No handler found for request type " + type);
     }
     
     public void HandleInit(Message message)
@@ -78,7 +85,7 @@ public class Node
         {
             NodeIds.Add(nodeId);
         }
-        Console.Error.WriteLine("Initialized node " + Id + " with " + NodeIds.Count + " nodes");
+        Log("Initialized node " + Id + " with " + NodeIds.Count + " nodes");
     }
 
     public void HandleMessage(Message message)
@@ -94,13 +101,13 @@ public class Node
                 return;
             }
 
-            Console.Error.WriteLine("No callback found for message id " + replyTo);
+            Log("No callback found for message id " + replyTo);
         }
         
         switch (type)
         {
             case null:
-                Console.Error.WriteLine("No type found in message");
+                Log("No type found in message");
                 return;
             case "init":
             {
@@ -123,14 +130,14 @@ public class Node
             while (true)
             {
                 var line = Console.ReadLine()!;
-                Console.Error.WriteLine("Received: " + line);
+                Log("Received: " + line);
                 var message = JsonSerializer.Deserialize<Message>(line) ?? throw new Exception("Failed to deserialize message");
                 HandleMessage(message);
             }
         }
         catch (Exception e)
         {
-            Console.Error.WriteLine(e.Message);
+            Log(e.Message);
         }
     }
 }
