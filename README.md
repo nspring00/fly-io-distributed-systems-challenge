@@ -22,3 +22,8 @@ Further information on the challenges can be found on the [official website by F
   - [ ] [#6a: Single-Node, Totally-Available Transactions](https://fly.io/dist-sys/6a/)
   - [ ] [#6b: Totally-Available, Read Uncommitted Transactions](https://fly.io/dist-sys/6b/)
   - [ ] [#6b: Totally-Available, Read Committed Transactions](https://fly.io/dist-sys/6c/)
+
+
+## How to run
+
+`java -jar lib\maelstrom.jar test -w echo --bin ..\fly-io-distributed-systems-challenge\Challenge.Echo\bin\Debug\net7.0\Challenge.Echo.exe --node-count 1 --time-limit 10`
