@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maelstrom", "Maelstrom\Mael
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Challenge.UniqueIds", "Challenge.UniqueIds\Challenge.UniqueIds.csproj", "{2830119F-9D06-41FB-BEC0-403C68D5EE56}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Challenge.Broadcast", "Challenge.Broadcast\Challenge.Broadcast.csproj", "{FF0CFF73-5D90-4032-8113-F43C1CEBA84C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{2830119F-9D06-41FB-BEC0-403C68D5EE56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2830119F-9D06-41FB-BEC0-403C68D5EE56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2830119F-9D06-41FB-BEC0-403C68D5EE56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF0CFF73-5D90-4032-8113-F43C1CEBA84C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF0CFF73-5D90-4032-8113-F43C1CEBA84C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF0CFF73-5D90-4032-8113-F43C1CEBA84C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF0CFF73-5D90-4032-8113-F43C1CEBA84C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
