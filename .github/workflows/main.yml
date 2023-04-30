@@ -12,6 +12,7 @@ jobs:
         challenge:
           - {name: Echo, workload: echo, flags: --node-count 1 --time-limit 10}
           - {name: UniqueIds, workload: unique-ids, flags: --time-limit 30 --rate 1000 --node-count 3 --availability total --nemesis partition}
+          - {name: Single-Node Broadcast, workload: broadcast, flags: --node-count 1 --time-limit 20 --rate 10}
 
     steps:
       - uses: actions/checkout@v3
