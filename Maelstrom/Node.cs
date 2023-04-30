@@ -42,7 +42,7 @@ public class Node
         Send(request.Source, body);
     }
     
-    public void Rpc(string dest, Body body, Action<Message> callback)
+    public void Rpc<TBody>(string dest, TBody body, Action<Message> callback) where TBody : Body
     {
         var msgId = Interlocked.Increment(ref _lastMessageId);
         if (!_callbackHandlers.TryAdd(msgId, callback))
