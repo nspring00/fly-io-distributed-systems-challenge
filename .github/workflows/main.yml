@@ -10,9 +10,9 @@ jobs:
     strategy:
       matrix:
         challenge:
-          - {name: Echo, workload: echo, flags: --node-count 1 --time-limit 10}
-          - {name: UniqueIds, workload: unique-ids, flags: --time-limit 30 --rate 1000 --node-count 3 --availability total --nemesis partition}
-          - {name: Single-Node Broadcast, workload: broadcast, flags: --node-count 1 --time-limit 20 --rate 10}
+          - {name: Echo, bin: Echo, workload: echo, flags: --node-count 1 --time-limit 10}
+          - {name: UniqueIds, bin: UniqueIds, workload: unique-ids, flags: --time-limit 30 --rate 1000 --node-count 3 --availability total --nemesis partition}
+          - {name: Single-Node Broadcast, bin: Broadcast, workload: broadcast, flags: --node-count 1 --time-limit 20 --rate 10}
 
     steps:
       - uses: actions/checkout@v3
@@ -39,7 +39,7 @@ jobs:
         run: |
           export DISPLAY=:99
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-          java -jar maelstrom/lib/maelstrom.jar test -w ${{ matrix.challenge.workload }} --bin Challenge.${{ matrix.challenge.name }}/bin/Release/net7.0/Challenge.${{ matrix.challenge.name }} ${{ matrix.challenge.flags }}
+          java -jar maelstrom/lib/maelstrom.jar test -w ${{ matrix.challenge.workload }} --bin Challenge.${{ matrix.challenge.bin }}/bin/Release/net7.0/Challenge.${{ matrix.challenge.bin }} ${{ matrix.challenge.flags }}
       - uses: actions/upload-artifact@v3
         with:
           name: maelstrom-output
