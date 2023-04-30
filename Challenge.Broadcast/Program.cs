@@ -12,7 +12,11 @@ void HandleBroadcast(Message message)
     var body = message.GetBody<BroadcastBody>();
     var messageValue = body.Message;
     node.Log("Received message " + messageValue);
-    node.Reply(message, new Body { Type = "broadcast_ok" });
+
+    if (message.Source.StartsWith("c"))
+    {
+        node.Reply(message, new Body { Type = "broadcast_ok" });
+    }
 
     if (!messages.TryAdd(body.Message, 0x0))
     {
