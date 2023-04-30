@@ -9,7 +9,7 @@ Further information on the challenges can be found on the [official website by F
 - [x] [#2: Unique ID Generation](https://fly.io/dist-sys/2/)
 - [ ] #3: Broadcast
   - [x] [#3a: Single-Node Broadcast](https://fly.io/dist-sys/3a/)
-  - [ ] [#3b: Multi-Node Broadcast](https://fly.io/dist-sys/3b/)
+  - [x] [#3b: Multi-Node Broadcast](https://fly.io/dist-sys/3b/)
   - [ ] [#3c: Fault Tolerant Broadcast](https://fly.io/dist-sys/3c/)
   - [ ] [#3d: Efficient Broadcast, Part I](https://fly.io/dist-sys/3d/)
   - [ ] [#3e: Efficient Broadcast, Part II](https://fly.io/dist-sys/3e/)
