@@ -8,8 +8,8 @@ public class Node
     public string Id { get; private set; } = "<uninitialized>";
     public IList<string> NodeIds { get; } = new List<string>();
     
-    private readonly IDictionary<string, Action<Message>> _requestHandlers = new Dictionary<string, Action<Message>>();
-    private readonly ConcurrentDictionary<int, Action<Message>> _callbackHandlers = new();
+    private readonly Dictionary<string, Func<Message, Task>> _requestHandlers = new();
+    private readonly ConcurrentDictionary<int, Func<Message, Task>> _callbackHandlers = new();
     
     private int _lastMessageId;
     
@@ -18,7 +18,7 @@ public class Node
         Console.Error.WriteLine(message);
     }
     
-    public Node On(string type, Action<Message> handler)
+    public Node On(string type, Func<Message, Task> handler)
     {
         if (!_requestHandlers.TryAdd(type, handler))
         {
@@ -49,7 +49,7 @@ public class Node
         Send(request.Source, body);
     }
     
-    public void Rpc<TBody>(string dest, TBody body, Action<Message> callback) where TBody : Body
+    public void Rpc<TBody>(string dest, TBody body, Func<Message, Task> callback) where TBody : Body
     {
         var msgId = Interlocked.Increment(ref _lastMessageId);
         if (!_callbackHandlers.TryAdd(msgId, callback))
@@ -62,9 +62,9 @@ public class Node
     
     public void HandleRequest(string type, Message request)
     {
-        if (_requestHandlers.ContainsKey(type))
+        if (_requestHandlers.TryGetValue(type, out var handler))
         {
-            ThreadPool.QueueUserWorkItem(_ => _requestHandlers[type](request));
+            _ = handler(request);
             return;
         }
 
@@ -97,7 +97,7 @@ public class Node
         {
             if (_callbackHandlers.TryRemove(replyTo.Value, out var handler))
             {
-                ThreadPool.QueueUserWorkItem(_ => handler(message));
+                _ = handler(message);
                 return;
             }
 
