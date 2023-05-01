@@ -37,12 +37,13 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore Challenge.${{ matrix.challenge.bin }}
       - name: Run the test
-        continue-on-error: true
+        id: maelstromTest
         run: |
           export DISPLAY=:99
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
           java -jar maelstrom/lib/maelstrom.jar test -w ${{ matrix.challenge.workload }} --bin Challenge.${{ matrix.challenge.bin }}/bin/Release/net7.0/Challenge.${{ matrix.challenge.bin }} ${{ matrix.challenge.flags }}
       - uses: actions/upload-artifact@v3
+        if: success() || (failure() && steps.maelstromTest.outcome == 'failure')
         with:
           name: maelstrom-output
           path: | 
