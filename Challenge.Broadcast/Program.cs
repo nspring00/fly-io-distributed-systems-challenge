@@ -16,6 +16,8 @@ async Task HandleBroadcast(Message message)
     node.Reply(message, new Body { Type = "broadcast_ok" });
     node.Log("Replied to message " + messageValue + " with broadcast_ok");
 
+    return;
+
     if (!messages.TryAdd(body.Message, 0x0))
     {
         node.Log("Message " + messageValue + " already received, ignoring");
