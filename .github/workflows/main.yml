@@ -14,6 +14,7 @@ jobs:
           - {name: UniqueIds, bin: UniqueIds, workload: unique-ids, flags: --time-limit 30 --rate 1000 --node-count 3 --availability total --nemesis partition}
           - {name: Single-Node Broadcast, bin: Broadcast, workload: broadcast, flags: --node-count 1 --time-limit 20 --rate 10}
           - {name: Multi-Node Broadcast, bin: Broadcast, workload: broadcast, flags: --node-count 5 --time-limit 20 --rate 10}
+          - {name: Fault Tolerant Broadcast, bin: Broadcast, workload: broadcast, flags: --node-count 5 --time-limit 20 --rate 10 --nemesis partition}
 
     steps:
       - uses: actions/checkout@v3
