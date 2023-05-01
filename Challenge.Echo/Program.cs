@@ -11,6 +11,7 @@ node.On("echo", message =>
     {
         Type = "echo_ok", MessageId = Interlocked.Increment(ref messageId), Echo = body.Echo
     });
+    return Task.CompletedTask;
 });
 
 node.Run();

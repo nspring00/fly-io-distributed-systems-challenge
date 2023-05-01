@@ -18,6 +18,7 @@ node.On("generate", message =>
         Type = "generate_ok",
         Id = GenerateId()
     });
+    return Task.CompletedTask;
 });
 
 node.Run();
