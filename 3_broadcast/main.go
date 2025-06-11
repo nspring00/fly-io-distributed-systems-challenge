@@ -5,14 +5,16 @@ import (
 	"fmt"
 	maelstrom "github.com/jepsen-io/maelstrom/demo/go"
 	"log"
+	"sync"
 )
 
 func main() {
 	n := maelstrom.NewNode()
+	var mu sync.Mutex
 
 	var seen = map[int]struct{}{}
 	var seenList []int
-	var topology map[string][]string
+	var neighbors []string
 
 	n.Handle("topology", func(msg maelstrom.Message) error {
 		var body TopologyMessageBody
@@ -20,8 +22,9 @@ func main() {
 			return fmt.Errorf("unmarshal topology message body: %w", err)
 		}
 
-		topology = body.Topology
-		_ = topology
+		mu.Lock()
+		neighbors = body.Topology[n.ID()]
+		mu.Unlock()
 
 		return n.Reply(msg, createMessage("topology_ok"))
 	})
@@ -32,10 +35,21 @@ func main() {
 			return fmt.Errorf("unmarshal broadcast message body: %w", err)
 		}
 
+		mu.Lock()
 		_, known := seen[body.Message]
 		if !known {
 			seen[body.Message] = struct{}{}
 			seenList = append(seenList, body.Message)
+			mu.Unlock()
+
+			// Forward to neighbors
+			for _, neighbor := range neighbors {
+				if err := n.Send(neighbor, msg.Body); err != nil {
+					return fmt.Errorf("send broadcast message: %w", err)
+				}
+			}
+		} else {
+			mu.Unlock()
 		}
 
 		return n.Reply(msg, createMessage("broadcast_ok"))

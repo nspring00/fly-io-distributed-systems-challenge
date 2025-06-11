@@ -25,6 +25,9 @@ test-2: 2_unique_ids maelstrom
 test-3a: 3_broadcast maelstrom
 	./maelstrom/maelstrom test -w broadcast --bin ./bin/broadcast --node-count 1 --time-limit 20 --rate 10
 
+test-3b: 3_broadcast maelstrom
+	./maelstrom/maelstrom test -w broadcast --bin ./bin/broadcast --node-count 5 --time-limit 20 --rate 10
+
 clean:
 	@rm -rf $(BIN_DIR) maelstrom
 
