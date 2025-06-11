@@ -1,3 +1,5 @@
+![CI Tests Badge](https://github.com/nspring00/fly-io-distributed-systems-challenge/actions/workflows/main.yml/badge.svg?branch=main)
+
 # Fly.io Distributed Systems Challenges
 
 Further information on the challenges can be found on the [official website by Fly.io](https://fly.io/dist-sys/).
