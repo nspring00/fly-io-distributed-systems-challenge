@@ -4,7 +4,7 @@ Further information on the challenges can be found on the [official website by F
 
 ## Challenges
 - [x] [#1: Echo](https://fly.io/dist-sys/1/)
-- [ ] [#2: Unique ID Generation](https://fly.io/dist-sys/2/)
+- [x] [#2: Unique ID Generation](https://fly.io/dist-sys/2/)
 - [ ] #3: Broadcast
     - [ ] [#3a: Single-Node Broadcast](https://fly.io/dist-sys/3a/)
     - [ ] [#3b: Multi-Node Broadcast](https://fly.io/dist-sys/3b/)
@@ -23,6 +23,10 @@ Further information on the challenges can be found on the [official website by F
 
 
 ## How to run
+
+The tests can be run via `make test-X`, e.g. 
+
 ```bash
-make test-echo
+make test-1
+make test-2
 ```
