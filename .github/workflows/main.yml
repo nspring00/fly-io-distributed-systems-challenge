@@ -19,6 +19,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install APT dependencies
+        run: sudo apt install -y graphviz gnuplot xvfb
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
