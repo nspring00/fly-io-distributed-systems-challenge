@@ -31,4 +31,5 @@ The tests can be run via `make test-X`, e.g.
 ```bash
 make test-1
 make test-2
+make test-3a
 ```
