@@ -31,6 +31,12 @@ test-3b: 3_broadcast maelstrom
 test-3c: 3_broadcast maelstrom
 	./maelstrom/maelstrom test -w broadcast --bin ./bin/broadcast --node-count 5 --time-limit 20 --rate 10 --nemesis partition
 
+test-3d: 3_broadcast maelstrom
+	./maelstrom/maelstrom test -w broadcast --bin ./bin/broadcast --node-count 25 --time-limit 20 --rate 100 --latency 100
+
+results: maelstrom
+	./maelstrom/maelstrom serve
+
 clean:
 	@rm -rf $(BIN_DIR) maelstrom
 

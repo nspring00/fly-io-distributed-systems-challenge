@@ -28,7 +28,17 @@ func main() {
 		}
 
 		mu.Lock()
-		neighbors = body.Topology[n.ID()]
+		// Use a Star topology with n0 as the center
+		if n.ID() == n.NodeIDs()[0] {
+			for _, node := range n.NodeIDs() {
+				if node == n.ID() {
+					continue
+				}
+				neighbors = append(neighbors, node)
+			}
+		} else {
+			neighbors = append(neighbors, n.NodeIDs()[0])
+		}
 		mu.Unlock()
 
 		return n.Reply(msg, createMessage("topology_ok"))
@@ -40,7 +50,7 @@ func main() {
 			seen[msg] = struct{}{}
 			seenList = append(seenList, msg)
 		}
-		return known
+		return !known
 	}
 
 	n.Handle("broadcast", func(msg maelstrom.Message) error {
@@ -56,8 +66,8 @@ func main() {
 		return n.Reply(msg, createMessage("broadcast_ok"))
 	})
 
-	n.Handle("broadcast_list", func(msg maelstrom.Message) error {
-		var body BroadcastListMessageBody
+	n.Handle("gossip", func(msg maelstrom.Message) error {
+		var body GossipMessageBody
 		if err := json.Unmarshal(msg.Body, &body); err != nil {
 			return fmt.Errorf("unmarshal broadcast list message body: %w", err)
 		}
@@ -79,7 +89,7 @@ func main() {
 
 	// Background sender thread
 	go func() {
-		ticker := time.NewTicker(500 * time.Millisecond)
+		ticker := time.NewTicker(200 * time.Millisecond)
 		defer ticker.Stop()
 
 		for {
@@ -89,7 +99,7 @@ func main() {
 			case <-ticker.C:
 				mu.Lock()
 				for _, neighbor := range neighbors {
-					msg := createMessage("broadcast_list")
+					msg := createMessage("gossip")
 					msg["messages"] = seenList
 					if err := n.Send(neighbor, msg); err != nil {
 						log.Fatal(err)
@@ -121,7 +131,7 @@ type TopologyMessageBody struct {
 	Topology map[string][]string `json:"topology"`
 }
 
-type BroadcastListMessageBody struct {
+type GossipMessageBody struct {
 	maelstrom.MessageBody
 	Messages []int `json:"messages"`
 }

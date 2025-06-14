@@ -17,6 +17,7 @@ jobs:
           - test-3a
           - test-3b
           - test-3c
+          - test-3d
 
     steps:
       - name: Checkout code

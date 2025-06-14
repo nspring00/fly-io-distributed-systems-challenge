@@ -11,8 +11,8 @@ Further information on the challenges can be found on the [official website by F
     - [x] [#3a: Single-Node Broadcast](https://fly.io/dist-sys/3a/)
     - [x] [#3b: Multi-Node Broadcast](https://fly.io/dist-sys/3b/)
     - [x] [#3c: Fault Tolerant Broadcast](https://fly.io/dist-sys/3c/)
-    - [ ] [#3d: Efficient Broadcast, Part I](https://fly.io/dist-sys/3d/)
-    - [ ] [#3e: Efficient Broadcast, Part II](https://fly.io/dist-sys/3e/)
+    - [x] [#3d: Efficient Broadcast, Part I](https://fly.io/dist-sys/3d/)
+    - [x] [#3e: Efficient Broadcast, Part II](https://fly.io/dist-sys/3e/)
 - [ ] [#4: Grow-Only Counter](https://fly.io/dist-sys/4/)
 - [ ] #5: Kafka-Style Log
     - [ ] [#5a: Single-Node Kafka-Style Log](https://fly.io/dist-sys/5a/)
@@ -34,4 +34,5 @@ make test-2
 make test-3a
 make test-3b
 make test-3c
+make test-3d
 ```
