@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	maelstrom "github.com/jepsen-io/maelstrom/demo/go"
 	"log"
 	"sync"
+	"time"
 )
 
 func main() {
@@ -13,8 +15,11 @@ func main() {
 	var mu sync.Mutex
 
 	var seen = map[int]struct{}{}
-	var seenList []int
-	var neighbors []string
+	var seenList = make([]int, 0)
+	var neighbors = make([]string, 0)
+
+	bgCtx, bgCancel := context.WithCancel(context.Background())
+	defer bgCancel()
 
 	n.Handle("topology", func(msg maelstrom.Message) error {
 		var body TopologyMessageBody
@@ -29,6 +34,15 @@ func main() {
 		return n.Reply(msg, createMessage("topology_ok"))
 	})
 
+	saveMessage := func(msg int) bool {
+		_, known := seen[msg]
+		if !known {
+			seen[msg] = struct{}{}
+			seenList = append(seenList, msg)
+		}
+		return known
+	}
+
 	n.Handle("broadcast", func(msg maelstrom.Message) error {
 		var body BroadcastMessageBody
 		if err := json.Unmarshal(msg.Body, &body); err != nil {
@@ -36,23 +50,25 @@ func main() {
 		}
 
 		mu.Lock()
-		_, known := seen[body.Message]
-		if !known {
-			seen[body.Message] = struct{}{}
-			seenList = append(seenList, body.Message)
-			mu.Unlock()
-
-			// Forward to neighbors
-			for _, neighbor := range neighbors {
-				if err := n.Send(neighbor, msg.Body); err != nil {
-					return fmt.Errorf("send broadcast message: %w", err)
-				}
-			}
-		} else {
-			mu.Unlock()
-		}
+		saveMessage(body.Message)
+		mu.Unlock()
 
 		return n.Reply(msg, createMessage("broadcast_ok"))
+	})
+
+	n.Handle("broadcast_list", func(msg maelstrom.Message) error {
+		var body BroadcastListMessageBody
+		if err := json.Unmarshal(msg.Body, &body); err != nil {
+			return fmt.Errorf("unmarshal broadcast list message body: %w", err)
+		}
+
+		mu.Lock()
+		for _, message := range body.Messages {
+			saveMessage(message)
+		}
+		mu.Unlock()
+
+		return nil
 	})
 
 	n.Handle("read", func(msg maelstrom.Message) error {
@@ -60,6 +76,29 @@ func main() {
 		reply["messages"] = seenList
 		return n.Reply(msg, reply)
 	})
+
+	// Background sender thread
+	go func() {
+		ticker := time.NewTicker(500 * time.Millisecond)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-bgCtx.Done():
+				return
+			case <-ticker.C:
+				mu.Lock()
+				for _, neighbor := range neighbors {
+					msg := createMessage("broadcast_list")
+					msg["messages"] = seenList
+					if err := n.Send(neighbor, msg); err != nil {
+						log.Fatal(err)
+					}
+				}
+				mu.Unlock()
+			}
+		}
+	}()
 
 	if err := n.Run(); err != nil {
 		log.Fatal(err)
@@ -80,4 +119,9 @@ type BroadcastMessageBody struct {
 type TopologyMessageBody struct {
 	maelstrom.MessageBody
 	Topology map[string][]string `json:"topology"`
+}
+
+type BroadcastListMessageBody struct {
+	maelstrom.MessageBody
+	Messages []int `json:"messages"`
 }

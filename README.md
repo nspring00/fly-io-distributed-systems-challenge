@@ -10,7 +10,7 @@ Further information on the challenges can be found on the [official website by F
 - [ ] #3: Broadcast
     - [x] [#3a: Single-Node Broadcast](https://fly.io/dist-sys/3a/)
     - [x] [#3b: Multi-Node Broadcast](https://fly.io/dist-sys/3b/)
-    - [ ] [#3c: Fault Tolerant Broadcast](https://fly.io/dist-sys/3c/)
+    - [x] [#3c: Fault Tolerant Broadcast](https://fly.io/dist-sys/3c/)
     - [ ] [#3d: Efficient Broadcast, Part I](https://fly.io/dist-sys/3d/)
     - [ ] [#3e: Efficient Broadcast, Part II](https://fly.io/dist-sys/3e/)
 - [ ] [#4: Grow-Only Counter](https://fly.io/dist-sys/4/)
@@ -33,4 +33,5 @@ make test-1
 make test-2
 make test-3a
 make test-3b
+make test-3c
 ```
